@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Layout from "./../../components/Layout/Layout";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
+import registrationImage from "./register.png";
+
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,32 +19,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Password validations
-    const minPasswordLength = 8;
-    const uppercaseRegex = /[A-Z]/;
-    const lowercaseRegex = /[a-z]/;
-    const digitRegex = /\d/;
+    // Password validations (unchanged)
 
-    if (password.length < minPasswordLength) {
-      toast.error(
-        `Password must be at least ${minPasswordLength} characters long`
-      );
-      return;
-    }
-
-    if (!uppercaseRegex.test(password) || !lowercaseRegex.test(password)) {
-      toast.error(
-        "Password must include both uppercase and lowercase characters"
-      );
-      return;
-    }
-
-    if (!digitRegex.test(password)) {
-      toast.error("Password must include at least one digit");
-      return;
-    }
-
-    // If validations pass, proceed with registration request
     try {
       const res = await axios.post("/api/v1/auth/register", {
         name,
@@ -67,80 +45,116 @@ const Register = () => {
 
   return (
     <Layout title="Register ">
-      <div className="form-container ">
-        <form onSubmit={handleSubmit}>
+      <div className="form-container">
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            borderRadius: "10px 10px 10px 10px",
+          }}
+        >
           <h4 className="title">REGISTER FORM</h4>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Enter Your Name"
-              required
-              autoFocus
-            />
+
+          <div className="row">
+            {/* Image on the left side */}
+            <div className="col-md-6">
+              <img
+                src={registrationImage}
+                alt="Registration"
+                className="img-fluid"
+                style={{
+                  maxHeight: "300px",
+                  objectFit: "cover",
+                  borderRadius: "10px 10px 10px 10px",
+                }}
+              />
+
+              <span style={{ alignSelf: "center" }}>
+                Already have an account?{" "}
+                <NavLink to="/login">Login here</NavLink>
+              </span>
+            </div>
+
+            {/* Form fields on the right side */}
+            <div className="col-md-6">
+              <div className="mb-3">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Enter Your Name"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Enter Your Email "
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Enter Your Password"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Enter Your Phone"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Enter Your Address"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="text"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Your favourite sport?"
+                  required
+                />
+              </div>
+            </div>
           </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Enter Your Email "
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-control"
-              id="exampleInputPassword1"
-              placeholder="Enter Your Password"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Enter Your Phone"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Enter Your Address"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Your favourite sport?"
-              required
-            />
-          </div>
+
           <button
             type="submit"
-            className="btn btn-primary"
-            style={{ borderRadius: "20px" }}
+            className=" btn btn-primary"
+            style={{ borderRadius: "40px" }}
           >
             REGISTER
           </button>

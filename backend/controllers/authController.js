@@ -3,6 +3,7 @@ import orderModel from "../models/orderModel.js";
 import Order from "../models/orderModel.js"; // Add this line
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
+import mongoose from "mongoose";
 // ... rest of your code
 
 export const registerController = async (req, res) => {
@@ -292,6 +293,91 @@ export const orderDeleteController = async (req, res) => {
       success: false,
       message: "Error while deleting order",
       error: error.message,
+    });
+  }
+};
+
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await userModel.find();
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error("Error counting users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getUserDetailsController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate if id is provided and follows a valid pattern for MongoDB ObjectId
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+    if (!userId || !objectIdPattern.test(userId)) {
+      return res.status(400).json({ error: "Invalid user ID provided" });
+    }
+
+    const user = await userModel.findById(userId);
+
+    // Check if the user with the provided ID exists
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User details retrieved successfully",
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while retrieving user details",
+      error,
+    });
+  }
+};
+
+export const updateUserRoleController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+
+    // Validate if userId is provided and is a valid ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID provided" });
+    }
+
+    // Validate the role
+    if (![0, 1, 2].includes(role)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid role value. Must be 0, 1, or 2." });
+    }
+
+    // Update user role
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User role updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while updating user role",
+      error,
     });
   }
 };

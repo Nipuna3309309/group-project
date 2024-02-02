@@ -1,8 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import "./AdminMenu.css"; // Import the CSS file for styling
+
 const AdminMenu = () => {
   return (
-    <>
+    <div className="admin-menu-container">
       <div className="text-center">
         <div className="list-group">
           <h4>Admin Panel</h4>
@@ -38,7 +40,7 @@ const AdminMenu = () => {
           </NavLink>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -9,39 +9,50 @@ import {
   getAllOrdersController,
   orderStatusController,
   orderDeleteController,
+  getUsers,
+  getUserDetailsController,
+  updateUserRoleController,
 } from "../controllers/authController.js";
-import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
+import {
+  isAdmin,
+  isEmployee,
+  requireSignIn,
+} from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerController);
 
-//LOGIN||post
+// LOGIN || post
 router.post("/login", loginController);
 
-//Forgot password|| post
+// Forgot password || post
 router.post("/forgot-password", forgotPasswordController);
 
-//test routes
+// test routes
 router.get("/test", requireSignIn, isAdmin, testController);
 
-//protected routes
+// protected routes
 router.get("/user-auth", requireSignIn, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
-//protected admin routes
+// protected admin routes
 router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
-//update profile
+router.get("/employee-auth", requireSignIn, isEmployee, (req, res) => {
+  res.status(200).send({ ok: true });
+});
+
+// update profile
 router.put("/profile", requireSignIn, updateProfileController);
 
-//orders
+// orders
 router.get("/orders", requireSignIn, getOrdersController);
 
-//all orders
+// all orders
 router.get("/all-orders", requireSignIn, isAdmin, getAllOrdersController);
 
 // order status update
@@ -58,6 +69,22 @@ router.delete(
   requireSignIn,
   isAdmin,
   orderDeleteController
+);
+
+router.get("/admin/users", requireSignIn, isAdmin, getUsers);
+
+router.get(
+  "/admin/users/:userId",
+  requireSignIn,
+  isAdmin,
+  getUserDetailsController
+);
+
+router.put(
+  "/admin/users/role/:userId",
+  requireSignIn,
+  isAdmin,
+  updateUserRoleController
 );
 
 export default router;

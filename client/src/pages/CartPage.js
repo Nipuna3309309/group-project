@@ -16,7 +16,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  //total price
+  // total price
   const totalPrice = () => {
     try {
       let total = 0;
@@ -31,7 +31,8 @@ const CartPage = () => {
       console.log(error);
     }
   };
-  //detele item
+
+  // delete item
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
@@ -44,7 +45,7 @@ const CartPage = () => {
     }
   };
 
-  //get payment gateway token
+  // get payment gateway token
   const getToken = async () => {
     try {
       const { data } = await axios.get("/api/v1/product/braintree/token");
@@ -53,11 +54,15 @@ const CartPage = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getToken();
-  }, [auth?.token]);
 
-  //handle payments
+  useEffect(() => {
+    // Fetch the Braintree client token when the component mounts
+    if (auth?.token) {
+      getToken();
+    }
+  }, []); // Empty dependency array ensures it runs only once when the component mounts
+
+  // handle payments
   const handlePayment = async () => {
     try {
       setLoading(true);
@@ -76,6 +81,7 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
   return (
     <Layout>
       <div className="container">

@@ -1,0 +1,52 @@
+/* AdminMenu.css */
+
+.admin-menu-container {
+  max-width: 300px;
+  margin: 0 auto;
+  transition: max-width 0.3s ease; /* Add a transition for smooth width change */
+}
+
+.list-group {
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+
+.list-group h4 {
+  transition: opacity 0.3s ease; /* Add a transition for smooth opacity change */
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .admin-menu-container {
+    max-width: 100%;
+  }
+
+  .list-group {
+    max-height: 0;
+  }
+
+  .list-group h4 {
+    display: none;
+  }
+
+  .list-group-item {
+    border-radius: 0;
+  }
+
+  .list-group.show {
+    max-height: 500px;
+  }
+}
+
+/* Hover effect */
+.admin-menu-container:hover {
+  max-width: 400px; /* Adjust the width on hover */
+}
+
+.admin-menu-container:hover .list-group {
+  max-height: 500px; /* Adjust the max-height on hover */
+}
+
+.admin-menu-container:hover .list-group h4 {
+  opacity: 1; /* Show the heading on hover */
+}

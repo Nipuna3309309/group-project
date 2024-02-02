@@ -46,13 +46,10 @@ const CreateProduct = () => {
       productData.append("quantity", quantity);
       productData.append("photo", photo);
       productData.append("category", category);
-
-      // Use await here to wait for the result
-      const { data } = await axios.post(
+      const { data } = axios.post(
         "/api/v1/product/create-product",
         productData
       );
-
       if (data?.success) {
         toast.error(data?.message);
       } else {

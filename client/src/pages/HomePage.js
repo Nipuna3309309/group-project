@@ -20,7 +20,6 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // Get all categories
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get("/api/v1/category/get-category");
@@ -37,7 +36,6 @@ const HomePage = () => {
     getTotal();
   }, []);
 
-  // Get products
   const getAllProducts = async () => {
     try {
       setLoading(true);
@@ -50,7 +48,6 @@ const HomePage = () => {
     }
   };
 
-  // Get total count
   const getTotal = async () => {
     try {
       const { data } = await axios.get("/api/v1/product/product-count");
@@ -65,7 +62,6 @@ const HomePage = () => {
     loadMore();
   }, [page]);
 
-  // Load more
   const loadMore = async () => {
     try {
       setLoading(true);
@@ -78,7 +74,6 @@ const HomePage = () => {
     }
   };
 
-  // Filter by category
   const handleFilter = (value, id) => {
     let all = [...checked];
     if (value) {
@@ -94,7 +89,6 @@ const HomePage = () => {
     else filterProduct();
   }, [checked, radio]);
 
-  // Get filtered products
   const filterProduct = async () => {
     try {
       const { data } = await axios.post("/api/v1/product/product-filters", {
@@ -104,6 +98,23 @@ const HomePage = () => {
       setProducts(data?.products);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // Function to handle adding an item to the cart
+  const addToCart = (product) => {
+    if (product.quantity > 0) {
+      const updatedProduct = { ...product, quantity: product.quantity - 1 };
+      setCart([...cart, updatedProduct]);
+      localStorage.setItem("cart", JSON.stringify([...cart, updatedProduct]));
+
+      toast.success("Product added to cart!");
+
+      if (updatedProduct.quantity === 0) {
+        toast.warning("Low storage for this product!");
+      }
+    } else {
+      toast.error("Product is out of stock!");
     }
   };
 
@@ -165,14 +176,7 @@ const HomePage = () => {
                   </button>
                   <button
                     className="btn btn-secondary ms-1"
-                    onClick={() => {
-                      setCart([...cart, p]);
-                      localStorage.setItem(
-                        "cart",
-                        JSON.stringify([...cart, p])
-                      );
-                      toast.success("Item added to cart");
-                    }}
+                    onClick={() => addToCart(p)}
                   >
                     ADD TO CART
                   </button>
