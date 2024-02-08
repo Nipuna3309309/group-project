@@ -381,3 +381,35 @@ export const updateUserRoleController = async (req, res) => {
     });
   }
 };
+
+
+export const deleteUserRoleController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate if userId is provided and is a valid ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID provided" });
+    }
+
+    // Delete user by ID
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      deletedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while deleting user",
+      error: error.message,  // Include the error message in the response
+    });
+  }
+};

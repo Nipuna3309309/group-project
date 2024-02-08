@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import AdminMenu from "../../components/Layout/AdminMenu";
 import Layout from "./../../components/Layout/Layout";
 import axios from "axios";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [showAdminMenu, setShowAdminMenu] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -21,12 +23,20 @@ const Users = () => {
   };
 
   const handleEditRole = (userId) => {
-    const newRole = window.prompt(
-      "Enter new role (2 for EmployeeManager,1 for Admin, 0 for User):"
+    const roleOptions = ["User", "Admin", "EmployeeManager"];
+  
+    const selectedRole = window.prompt(
+      "Select new role:\n\n" +
+        roleOptions.map((option, index) => `${index}= ${option}`).join("\n")
     );
-    if (newRole !== null) {
-      // User clicked OK in the prompt
-      updateRole(userId, parseInt(newRole, 10));
+  
+    if (selectedRole !== null) {
+      const parsedRole = parseInt(selectedRole, 10);
+      if (![0, 1, 2].includes(parsedRole)) {
+        alert("Invalid role value. Must be 0, 1, or 2.");
+      } else {
+        updateRole(userId, parsedRole);
+      }
     }
   };
 
@@ -35,11 +45,30 @@ const Users = () => {
       await axios.put(`/api/v1/auth/admin/users/role/${userId}`, {
         role: newRole,
       });
-      // Refetch the user list after updating the role
       fetchUsers();
     } catch (error) {
       console.error("Error updating user role:", error);
     }
+  };
+
+  const handleDeleteUser = (userId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    if (confirmDelete) {
+      deleteUser(userId);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    try {
+      await axios.delete(`/api/v1/auth/admin/users/delete/${userId}`);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const toggleAdminMenu = () => {
+    setShowAdminMenu(!showAdminMenu);
   };
 
   return (
@@ -47,9 +76,12 @@ const Users = () => {
       <div className="container-fluid m-3 p-3">
         <div className="row">
           <div className="col-md-3">
-            <AdminMenu />
+            <button onClick={toggleAdminMenu} className="btn btn-primary mb-3">
+              Toggle Admin Menu
+            </button>
+            {showAdminMenu && <AdminMenu />}
           </div>
-          <div className="col-md-9">
+          <div className={`col-md-${showAdminMenu ? '9' : '12'}`}>
             <h1>All Users</h1>
             <table className="table">
               <thead>
@@ -57,10 +89,10 @@ const Users = () => {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Address</th>
-
                   <th>Admin/Employee</th>
                   <th>View</th>
                   <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,7 +102,6 @@ const Users = () => {
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.address}</td>
-
                       <td>
                         {user.role === 1
                           ? "Admin"
@@ -83,7 +114,7 @@ const Users = () => {
                           to={`/dashboard/admin/users/${user._id}`}
                           className="btn btn-primary btn-sm"
                         >
-                          View
+                          <FaEye />
                         </Link>{" "}
                       </td>
                       <td>
@@ -91,7 +122,15 @@ const Users = () => {
                           className="btn btn-primary btn-sm"
                           onClick={() => handleEditRole(user._id)}
                         >
-                          Edit
+                          <FaEdit />
+                        </button>{" "}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => handleDeleteUser(user._id)}
+                        >
+                          <FaTrash />
                         </button>{" "}
                       </td>
                     </tr>

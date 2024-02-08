@@ -12,6 +12,8 @@ import {
   getUsers,
   getUserDetailsController,
   updateUserRoleController,
+  
+  deleteUserRoleController,
 } from "../controllers/authController.js";
 import {
   isAdmin,
@@ -86,5 +88,13 @@ router.put(
   isAdmin,
   updateUserRoleController
 );
+
+router.delete(
+  "/admin/users/delete/:userId",
+  requireSignIn,
+  isAdmin,
+  deleteUserRoleController
+);
+
 
 export default router;

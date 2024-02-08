@@ -9,7 +9,8 @@ import SearchInput from "../Form/SearchInput";
 import useCategory from "../../hooks/usecategory";
 import { useCart } from "../../context/cart";
 import { Badge } from "antd";
-
+//import videoSource from "./video.mp4";
+import "./Header.css";
 const Header = () => {
   const [auth, setAuth] = useAuth();
   const categories = useCategory();
@@ -26,6 +27,16 @@ const Header = () => {
 
   return (
     <>
+      <div className="video-background">
+        <video autoPlay muted loop>
+          {/* Replace the source with your actual video file or URL */}
+          <source
+          //  src={videoSource}
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      </div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
           <button
