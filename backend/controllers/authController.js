@@ -4,7 +4,7 @@ import Order from "../models/orderModel.js"; // Add this line
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 import mongoose from "mongoose";
-// ... rest of your code
+
 
 export const registerController = async (req, res) => {
   try {
