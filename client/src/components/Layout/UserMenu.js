@@ -18,6 +18,12 @@ const UserMenu = () => {
           >
             Orders
           </NavLink>
+          <NavLink
+            to="/dashboard/user/appointment"
+            className="list-group-item list-group-item-action"
+          >
+            Book Appointment
+          </NavLink>
         </div>
       </div>
     </>

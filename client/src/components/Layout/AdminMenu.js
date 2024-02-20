@@ -38,10 +38,26 @@ const AdminMenu = () => {
           >
             Users
           </NavLink>
+          <NavLink
+            to="/dashboard/admin/create-post"
+            className="list-group-item list-group-item-action"
+          >
+            Create Posts
+          </NavLink>
+          <NavLink
+            to="/dashboard/admin/get-posts"
+            className="list-group-item list-group-item-action"
+          >
+            Posts
+          </NavLink>
         </div>
       </div>
     </div>
+
+    
   );
+
+  
 };
 
 export default AdminMenu;

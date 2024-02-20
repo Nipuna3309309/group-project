@@ -4,6 +4,9 @@ import AdminMenu from "../../components/Layout/AdminMenu";
 import Layout from "./../../components/Layout/Layout";
 import axios from "axios";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { Button } from "antd";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -24,12 +27,12 @@ const Users = () => {
 
   const handleEditRole = (userId) => {
     const roleOptions = ["User", "Admin", "EmployeeManager"];
-  
+
     const selectedRole = window.prompt(
       "Select new role:\n\n" +
         roleOptions.map((option, index) => `${index}= ${option}`).join("\n")
     );
-  
+
     if (selectedRole !== null) {
       const parsedRole = parseInt(selectedRole, 10);
       if (![0, 1, 2].includes(parsedRole)) {
@@ -71,6 +74,16 @@ const Users = () => {
     setShowAdminMenu(!showAdminMenu);
   };
 
+  const handleDownloadPDF = () => {
+    const input = document.getElementById("user-table");
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "PNG", 0, 0);
+      pdf.save("users.pdf");
+    });
+  };
+
   return (
     <Layout title={"Dashboard - All Users"}>
       <div className="container-fluid m-3 p-3">
@@ -83,60 +96,65 @@ const Users = () => {
           </div>
           <div className={`col-md-${showAdminMenu ? '9' : '12'}`}>
             <h1>All Users</h1>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Address</th>
-                  <th>Admin/Employee</th>
-                  <th>View</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users &&
-                  users.map((user) => (
-                    <tr key={user._id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.address}</td>
-                      <td>
-                        {user.role === 1
-                          ? "Admin"
-                          : user.role === 2
-                          ? "EmployeeManager"
-                          : "User"}
-                      </td>
-                      <td>
-                        <Link
-                          to={`/dashboard/admin/users/${user._id}`}
-                          className="btn btn-primary btn-sm"
-                        >
-                          <FaEye />
-                        </Link>{" "}
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => handleEditRole(user._id)}
-                        >
-                          <FaEdit />
-                        </button>{" "}
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => handleDeleteUser(user._id)}
-                        >
-                          <FaTrash />
-                        </button>{" "}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+            <Button type="primary" onClick={handleDownloadPDF} className="mb-3">
+              Download as PDF
+            </Button>
+            <div id="user-table">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Admin/Employee</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users &&
+                    users.map((user) => (
+                      <tr key={user._id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.address}</td>
+                        <td>
+                          {user.role === 1
+                            ? "Admin"
+                            : user.role === 2
+                            ? "EmployeeManager"
+                            : "User"}
+                        </td>
+                        <td>
+                          <Link
+                            to={`/dashboard/admin/users/${user._id}`}
+                            className="btn btn-primary btn-sm"
+                          >
+                            <FaEye />
+                          </Link>{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleEditRole(user._id)}
+                          >
+                            <FaEdit />
+                          </button>{" "}
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleDeleteUser(user._id)}
+                          >
+                            <FaTrash />
+                          </button>{" "}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

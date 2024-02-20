@@ -21,7 +21,7 @@ const CartPage = () => {
     try {
       let total = 0;
       cart?.map((item) => {
-        total = total + item.price;
+        total = total + item.price * item.quantity; // Update the calculation based on the quantity
       });
       return total.toLocaleString("en-LK", {
         style: "currency",
@@ -82,6 +82,21 @@ const CartPage = () => {
     }
   };
 
+
+  const updateQuantity = (pid, newQuantity) => {
+    try {
+      let myCart = [...cart];
+      let index = myCart.findIndex((item) => item._id === pid);
+      
+      if (index !== -1) {
+        myCart[index].quantity = newQuantity;
+        setCart(myCart);
+        localStorage.setItem("cart", JSON.stringify(myCart));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Layout>
       <div className="container">
@@ -116,6 +131,13 @@ const CartPage = () => {
                   <p>{p.name}</p>
                   <p>{p.description.substring(0, 30)}</p>
                   <p>Price : {p.price}</p>
+                  <label>Quantity: </label>
+                  <input
+                    type="number"
+                    value={p.quantity}
+                    min="1"
+                    onChange={(e) => updateQuantity(p._id, parseInt(e.target.value))}
+                  />
                   <button
                     className="btn btn-danger"
                     onClick={() => removeCartItem(p._id)}
@@ -123,6 +145,7 @@ const CartPage = () => {
                     Remove
                   </button>
                 </div>
+                
               </div>
             ))}
           </div>

@@ -4,11 +4,11 @@ import Order from "../models/orderModel.js"; // Add this line
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 import mongoose from "mongoose";
-
+// ... rest of your code
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address, answer } = req.body;
+    const { name, email, password, phone, address, answer,role } = req.body;
     //validations
     if (!name) {
       return res.send({ message: "Name is required" });
@@ -48,6 +48,7 @@ export const registerController = async (req, res) => {
       address,
       password: hashedPassword,
       answer,
+      role,
     }).save();
 
     res.status(201).send({

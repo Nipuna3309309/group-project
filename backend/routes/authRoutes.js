@@ -18,6 +18,7 @@ import {
 import {
   isAdmin,
   isEmployee,
+  isEmployeeUser,
   requireSignIn,
 } from "../middlewares/authMiddleware.js";
 
@@ -45,6 +46,10 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 });
 
 router.get("/employee-auth", requireSignIn, isEmployee, (req, res) => {
+  res.status(200).send({ ok: true });
+});
+
+router.get("/employeeuser-auth", requireSignIn, isEmployeeUser, (req, res) => {
   res.status(200).send({ ok: true });
 });
 

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Checkbox, Radio } from "antd";
+import { Card, Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 import { useCart } from "../context/cart";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Layout from "./../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
+import { Typography, CardContent, CardMedia, Chip, Rating, Stack, Switch } from '@mui/material';
 import "../styles/Homepage.css";
-
+import videoSource from "./video.mp4";
 const HomePage = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useCart();
@@ -19,6 +20,20 @@ const HomePage = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+
+
+  const getAllPosts = async () => {
+    try {
+      const response = await axios.get("/api/v1/post/get-posts")
+      setPosts(response.data.data);//methana posts kiyla ne ghuwe ethkota emnne natha
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      toast.error("Failed to fetch posts. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //get all cat
   const getAllCategory = async () => {
@@ -94,6 +109,11 @@ const HomePage = () => {
     if (checked.length || radio.length) filterProduct();
   }, [checked, radio]);
 
+  
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
   //get filterd product
   const filterProduct = async () => {
     try {
@@ -106,10 +126,35 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
+  const handleAddToCart = (product) => {
+    // Check if the product is already in the cart
+    const existingItem = cart.find((item) => item._id === product._id);
+
+    // If the product is not in the cart, add it with quantity 1
+    if (!existingItem) {
+      const updatedProduct = { ...product, quantity: 1 };
+      setCart([...cart, updatedProduct]);
+      localStorage.setItem('cart', JSON.stringify([...cart, updatedProduct]));
+      toast.success('Item Added to cart');
+    } else {
+      // If the product is already in the cart, update its quantity
+      const updatedCart = cart.map((item) =>
+        item._id === existingItem._id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      toast.success('Quantity Updated in cart');
+    }
+  };
   return (
+    <>
+
     <Layout title={"ALl Products - Best offers "} className="home-page">
       {/* banner image */}
-
+ 
       {/* banner image */}
       <div className="container-fluid row mt-3 home-page">
         <div className="col-md-3 filters">
@@ -212,11 +257,47 @@ const HomePage = () => {
               </button>
             )}
           </div>
+          <div className="container">
+        <h1>Read and Learn</h1>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="row">
+            {posts?.map((post) => (
+              <div key={post._id} className={`col-md-4 mb-4 ${post.category === 'blue' ? 'blue-card' : ''}`}>
+ <Card>
+  <CardMedia
+    component="img"
+    alt="Yosemite National Park"
+    image={`${process.env.PUBLIC_URL}/images/background.jpg`}
+  />
+  <CardContent>
+    <Typography variant="h5" component="div">
+      {post.topic}
+    </Typography>
+    <Stack direction="row" spacing={1} alignItems="center">
+      <Chip
+        size="small"
+        label={`Category: ${post.category}`}
+        color="primary"
+      />
+    </Stack>
+    <Typography variant="body2" color="text.secondary">
+      {post.description}
+    </Typography>
+  </CardContent>
+</Card>
+              </div>
+            ))}
+          </div>
+        )}
+    </div>
         </div>
       </div>
   
 
     </Layout>
+    </>
   );
 };
 

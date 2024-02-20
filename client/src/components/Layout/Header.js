@@ -139,6 +139,8 @@ const Header = () => {
                               ? "admin"
                               : auth?.user?.role === 2
                               ? "employee"
+                              : auth?.user?.role === 3
+                              ? "employeeuser"
                               : "user"
                           }`}
                           className="dropdown-item"

@@ -29,6 +29,13 @@ import AdminOrders from "./pages/Admin/AdminOrders";
 import ViewUser from "./pages/Admin/ViewUser";
 import EmployeeRoute from "./components/Routes/EmployeeRoute";
 import EmployeeManagerDashboard from "./pages/EmployeManager/EmployeeManagerDashboard";
+import CreatePosts from "./pages/Admin/CreatePosts";
+import Posts from "./pages/Admin/Posts";
+import UpdatePosts from "./pages/Admin/UpdatePosts";
+import BookingPage from "./pages/user/BookingPage";
+import Appointment from "./pages/user/appointment";
+import EmployeeUserRoute from "./components/Routes/EmployeeUser";
+import EmployeeDashboard from "./pages/Employee/EmployeeDashboard";
 
 function App() {
   return (
@@ -44,6 +51,8 @@ function App() {
           <Route path="user" element={<Dashboard />} />
           <Route path="user/orders" element={<Orders />} />
           <Route path="user/profile" element={<Profile />} />
+          <Route path="user/appointment" element={<BookingPage />} />
+          <Route path="user/getappointments" element={<Appointment />} />
         </Route>
         <Route path="/dashboard" element={<AdminRoute />}>
           <Route path="admin" element={<AdminDashboard />} />
@@ -55,10 +64,17 @@ function App() {
           <Route path="admin/users/:userId" element={<ViewUser />} />
 
           <Route path="admin/orders" element={<AdminOrders />} />
+          <Route path="admin/create-post" element={<CreatePosts />} />
+          <Route path="admin/get-posts" element={<Posts />} />
+          <Route path="admin/update-posts/:id" element={<UpdatePosts />} />
         </Route>
 
         <Route path="/dashboard" element={<EmployeeRoute />}>
           <Route path="employee" element={<EmployeeManagerDashboard />} />
+        </Route>
+
+        <Route path="/dashboard" element={<EmployeeUserRoute />}>
+          <Route path="employeeuser" element={<EmployeeDashboard />} />
         </Route>
 
         <Route path="/register" element={<Register />} />
